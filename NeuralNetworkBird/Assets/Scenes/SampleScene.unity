@@ -294,7 +294,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.12434153, y: 0.000000032235167, z: -0.000000004039519, w: 0.99223953}
+  m_LocalRotation: {x: 0.124341555, y: 8.3685825e-10, z: -1.04870314e-10, w: 0.9922395}
   m_LocalPosition: {x: -1.7747021, y: 3.99, z: -15.639402}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -571,7 +571,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122976581}
-  m_LocalRotation: {x: 0.12434153, y: 0.000000032235167, z: -0.000000004039519, w: 0.99223953}
+  m_LocalRotation: {x: 0.124341555, y: 8.3685825e-10, z: -1.04870314e-10, w: 0.9922395}
   m_LocalPosition: {x: -1.7747021, y: 3.99, z: -15.639402}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -605,7 +605,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1826857549901000686}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -636,7 +636,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7811464482218593625}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingR.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -669,7 +669,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3937458055980870843}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingR.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -685,7 +685,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8892537877714109320}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Tail.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -701,7 +701,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1499482719283111733}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Tail.002_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -732,7 +732,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 27524312536495413}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Tail.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -780,7 +780,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8227671749085063708}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -796,7 +796,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7047853207110842492}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingL.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -846,7 +846,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5848632768649330059}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingR.003_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -862,7 +862,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5603853696319390148}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Head_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -878,7 +878,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3238940321952031013}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingR.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1005,7 +1005,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6592908934598618727}
   - component: {fileID: 8907535795896029985}
-  m_Layer: 11
+  - component: {fileID: 8907535795896029986}
+  m_Layer: 6
   m_Name: Bird
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1051,7 +1052,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7971732793502557642}
-  m_LocalRotation: {x: -0, y: -0.6901231, z: -0, w: 0.72369206}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.45215863, y: 0.45215857, z: 0.45215863}
   m_ConstrainProportionsScale: 0
@@ -1060,7 +1061,7 @@ Transform:
   - {fileID: 2604184859041133627}
   m_Father: {fileID: 6592908934598618727}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 92.72, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!95 &7343849344446840695
 Animator:
   serializedVersion: 5
@@ -1091,7 +1092,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3166657844257004230}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1139,7 +1140,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7343849344446840688}
   - component: {fileID: 7343849344446840695}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1155,7 +1156,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3408935541214388733}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Main
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1187,7 +1188,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6096579158370029801}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingL.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1219,7 +1220,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9189626307052265180}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingL.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1239,6 +1240,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 5.546051, y: 1, z: 5.6673584}
   m_Center: {x: 0, y: 0, z: -0.32080078}
+--- !u!114 &8907535795896029986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6592908934598618720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0a543e6dc45ebb429d4cdfaf9a14627, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 6592908934598618727}
+  flySpeed: 30
+  rotSpeed: 40
 --- !u!1 &8920391993872164792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,7 +1265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2604184859041133627}
   - component: {fileID: 6091600976067076835}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: Bird
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1265,7 +1281,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7753389003337997492}
-  m_Layer: 11
+  m_Layer: 6
   m_Name: WingL.003_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
