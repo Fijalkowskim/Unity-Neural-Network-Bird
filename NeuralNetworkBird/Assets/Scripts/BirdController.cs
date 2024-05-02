@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[RequireComponent(typeof(Rigidbody))]
+using System;
 public class BirdController : MonoBehaviour
 {
     [Header("Fitness function")]
@@ -15,16 +15,29 @@ public class BirdController : MonoBehaviour
     [SerializeField] int fieldOfView = 120;
 
     [Header("Movement")]
-    [Range(10f,90f)]
-    [SerializeField] float maxTurnAngle = 45f;
     [SerializeField] float maxSpeed = 1f;
+    [SerializeField] float acceleration = 40f;
+    [SerializeField] float maxTurnSpeed = 2f;
 
-    Rigidbody rb;
     Vector3 startPosition, startRotation, lastPosition;
     List<Ray> sensors;
-
-    public float acceleration { get; set; }
-    public float turn { get; set; }
+    float _speed, _turn;
+    public float speed
+    {
+        get { return _speed; }
+        set
+        {
+            _speed = Mathf.Clamp01(value);
+        }
+    }
+    public float turn
+    {
+        get { return _turn; }
+        set
+        {
+            _turn = Mathf.Clamp(value, -1f, 1f);
+        }
+    }
     public float timeSinceStart { get; private set; }
     public float fitness { get; private set; }
     public float totalDistance { get; private set; }
@@ -32,19 +45,22 @@ public class BirdController : MonoBehaviour
     void Awake()
     {
         SetupVariables();
+        SetupSensors();
     }
     void SetupVariables()
     {
-        rb = gameObject.GetComponent<Rigidbody>();
         startPosition = transform.position;
-        startRotation = transform.eulerAngles;
-        sensors = new List<Ray>();
+        startRotation = transform.eulerAngles;   
         timeSinceStart = 0f;
         totalDistance = 0f;
         avgSpeed = 0f;
         fitness = 0f;
     }
-    private void Reset()
+    void SetupSensors()
+    {
+        sensors = new List<Ray>();
+    }
+    void Reset()
     {
         timeSinceStart = 0f;
         totalDistance = 0f;
@@ -54,12 +70,18 @@ public class BirdController : MonoBehaviour
         transform.position = startPosition;
         transform.eulerAngles = startRotation;
     }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        Move();
     }
+    void Move()
+    {
+        Vector3 forwardMovement = Vector3.Lerp(Vector3.zero, transform.forward * _speed * maxSpeed, acceleration * Time.deltaTime);
+        transform.position += forwardMovement;
+        Vector3 rotation = new Vector3(0, _turn * maxTurnSpeed * Time.deltaTime, 0);
+        transform.eulerAngles += rotation;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         Reset();
