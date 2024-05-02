@@ -19,6 +19,9 @@ public class BirdController : MonoBehaviour
     [SerializeField] float acceleration = 40f;
     [SerializeField] float maxTurnSpeed = 2f;
 
+    [Space(2)]
+    [SerializeField] bool drawGizmos = false;
+
     Vector3 startPosition, startRotation, lastPosition;
     List<Ray> sensors;
     float _speed, _turn;
@@ -59,6 +62,16 @@ public class BirdController : MonoBehaviour
     void SetupSensors()
     {
         sensors = new List<Ray>();
+
+        float angleBetweenSensors = fieldOfView / (numberOfSensors - 1);
+        float startAngle = -fieldOfView / 2;
+
+        for (int i = 0; i < numberOfSensors; i++)
+        {
+            Vector3 sensorDirection = Quaternion.Euler(0, startAngle + i * angleBetweenSensors, 0) * transform.forward;
+            Ray sensorRay = new Ray(transform.position, sensorDirection);
+            sensors.Add(sensorRay);
+        }
     }
     void Reset()
     {
@@ -73,6 +86,7 @@ public class BirdController : MonoBehaviour
     void Update()
     {
         Move();
+        SetupSensors();
     }
     void Move()
     {
@@ -85,5 +99,14 @@ public class BirdController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Reset();
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        if (!drawGizmos || sensors == null) return;
+        for (int i = 0; i < sensors.Count; i++)
+        {
+            Gizmos.DrawLine(sensors[i].origin, sensors[i].direction * 100f);
+        }
     }
 }
