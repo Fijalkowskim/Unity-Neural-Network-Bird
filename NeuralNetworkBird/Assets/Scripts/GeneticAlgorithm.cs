@@ -6,6 +6,7 @@ using MathNet.Numerics.LinearAlgebra;
 public class GeneticAlgorithm : MonoBehaviour
 {
     [SerializeField] BirdController controller;
+    [SerializeField] UIStatsDislay uIStatsDislay;
 
     [Header("Controls")]
     [Range(1,100)]
@@ -33,6 +34,7 @@ public class GeneticAlgorithm : MonoBehaviour
     private void Start()
     {
         CreatePopulation();
+        uIStatsDislay.SetPopulationText(currentGeneration, currentGenome, initialPopulation);
     }
 
     private void CreatePopulation()
@@ -69,7 +71,7 @@ public class GeneticAlgorithm : MonoBehaviour
         {
             RePopulate();
         }
-
+        uIStatsDislay.SetPopulationText(currentGeneration, currentGenome, initialPopulation);
     }
 
 
