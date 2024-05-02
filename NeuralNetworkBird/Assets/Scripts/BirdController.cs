@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 public class BirdController : MonoBehaviour
 {
-    
+    [SerializeField] GeneticAlgorithm geneticAlgorithm;
     [Header("Fitness function")]
     [Range(0f, 5f)]
     [Tooltip("How important distance is in fitness calculation")]
@@ -31,19 +31,16 @@ public class BirdController : MonoBehaviour
     [SerializeField] float sensorDistance = 200f;
     [SerializeField] LayerMask sensorMask;
 
-    [Header("Neural network")]
-    [SerializeField] NeuralNetwork nnet;
-    public int hiddenLayers = 1;
-    public int hiddenNeurons = 10;
-
     [Header("Movement")]
     [SerializeField] float maxSpeed = 1f;
     [SerializeField] float acceleration = 40f;
     [SerializeField] float maxTurnSpeed = 2f;
+    [SerializeField] float turnAcceleration = 20f;
 
     [Space(2)]
     [SerializeField] bool drawGizmos = false;
 
+    NeuralNetwork neuralNetwork;
     Vector3 startPosition, startRotation, lastPosition;
     //[SerializeField]
     float _speed, _turn;
@@ -74,15 +71,16 @@ public class BirdController : MonoBehaviour
     void Awake()
     {
         SetupVariables();
-        nnet.Initialize(numberOfSensors, hiddenLayers, hiddenNeurons);
     }
     void Update()
     {
+        if (neuralNetwork == null) return;
         Move();
         CalculateFintess();
     }
     private void FixedUpdate()
     {
+        if (neuralNetwork == null) return;
         ReadSensors();
     }
     void SetupVariables()
@@ -113,14 +111,14 @@ public class BirdController : MonoBehaviour
                 sensorValues[i] = 0;
 
         }
-        (speed, turn) = nnet.RunNetwork(new List<float>(sensorValues));
+        (speed, turn) = neuralNetwork.RuNeuralNetworkwork(new List<float>(sensorValues));
     }
 
     void Move()
     {
         Vector3 forwardMovement = Vector3.Lerp(Vector3.zero, transform.forward * _speed * maxSpeed, acceleration * Time.deltaTime);
         transform.position += forwardMovement;
-        Vector3 rotation = new Vector3(0, _turn * maxTurnSpeed * Time.deltaTime, 0);
+        Vector3 rotation = Vector3.Lerp(Vector3.zero, new Vector3(0, _turn * maxTurnSpeed, 0), turnAcceleration * Time.deltaTime);
         transform.eulerAngles += rotation;
     }
     void CalculateFintess()
@@ -145,17 +143,18 @@ public class BirdController : MonoBehaviour
 
         if (timeSinceStart >= timeToResetSimulation && fitness <= fitnessToResetSimulation)
         {
-            Reset();
+            geneticAlgorithm.Death(fitness, neuralNetwork);
             return;
         }    
         if(fitness >= successFitnessValue)
         {
             //Save network
-            Reset();
+            geneticAlgorithm.Death(fitness, neuralNetwork);
         }
     }
     void Reset()
     {
+        neuralNetwork.fitness = fitness;
         timeSinceStart = 0f;
         totalDistance = 0f;
         avgSpeed = 0f;
@@ -163,11 +162,16 @@ public class BirdController : MonoBehaviour
         lastPosition = startPosition;
         transform.position = startPosition;
         transform.eulerAngles = startRotation;
-        nnet.Initialize(numberOfSensors, hiddenLayers, hiddenNeurons);
+
+    }
+    public void ResetWithNetwork(NeuralNetwork neuralNetwork)
+    {
+        this.neuralNetwork = neuralNetwork;
+        Reset();
     }
     private void OnCollisionEnter(Collision collision)
     {
-        Reset();
+        geneticAlgorithm.Death(fitness, neuralNetwork);
     }
     private void OnDrawGizmos()
     {

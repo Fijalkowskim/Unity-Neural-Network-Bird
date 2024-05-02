@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using MathNet.Numerics.LinearAlgebra;
 using System;
-public class NeuralNetwork : MonoBehaviour
+public class NeuralNetwork 
 {
     Matrix<float> inputLayer;
     List<Matrix<float>> hiddenLayers;
     Matrix<float> outputLayer;
-    List<Matrix<float>> weights;
-    List<float> biases;
-    public void Initialize(int inputNeuronsCount, int hiddenLayersCount, int hiddenNeuronsCount)
+    public List<Matrix<float>> weights { get; set; }
+    public List<float> biases { get; set; }
+    public float fitness { get; set; }
+
+    public NeuralNetwork(int inputNeuronsCount, int hiddenLayersCount, int hiddenNeuronsCount)
     {
         inputLayer = Matrix<float>.Build.Dense(1, inputNeuronsCount);
         hiddenLayers = new List<Matrix<float>>();
         outputLayer = Matrix<float>.Build.Dense(1, 2);
         weights = new List<Matrix<float>>();
         biases = new List<float>();
+
+        fitness = 0;
 
         for (int i = 0; i < hiddenLayersCount + 1; i++)
         {
@@ -39,6 +43,15 @@ public class NeuralNetwork : MonoBehaviour
 
         RandomiseWeights();
     }
+    public NeuralNetwork(NeuralNetwork neuralNetwork)
+    {
+        inputLayer = Matrix<float>.Build.Dense(1, neuralNetwork.inputLayer.ColumnCount);
+        hiddenLayers = new List<Matrix<float>>(neuralNetwork.hiddenLayers);
+        outputLayer = Matrix<float>.Build.Dense(1, 2);
+        weights = new List<Matrix<float>>(neuralNetwork.weights);
+        biases = new List<float>(neuralNetwork.biases);
+        fitness = 0;
+    }
 
     public void RandomiseWeights()
     {
@@ -55,7 +68,7 @@ public class NeuralNetwork : MonoBehaviour
         }
     }
 
-    public (float, float) RunNetwork(List<float> sensorValues)
+    public (float, float) RuNeuralNetworkwork(List<float> sensorValues)
     {
         if (sensorValues.Count != inputLayer.ColumnCount) return (0, 0);
         for (int i = 0; i < sensorValues.Count; i++)
