@@ -2774,7 +2774,7 @@ MonoBehaviour:
   distanceMult: 1.5
   avgSpeedMult: 1.5
   sensorMult: 0.2
-  successFitnessValue: 1000
+  successFitnessValue: 3000
   timeToResetSimulation: 20
   fitnessToResetSimulation: 40
   _numberOfSensors: 20

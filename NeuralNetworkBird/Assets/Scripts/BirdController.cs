@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 public class BirdController : MonoBehaviour
 {
+    
     [Header("Fitness function")]
     [Range(0f, 5f)]
     [Tooltip("How important distance is in fitness calculation")]
@@ -30,6 +31,11 @@ public class BirdController : MonoBehaviour
     [SerializeField] float sensorDistance = 200f;
     [SerializeField] LayerMask sensorMask;
 
+    [Header("Neural network")]
+    [SerializeField] NeuralNetwork nnet;
+    public int hiddenLayers = 1;
+    public int hiddenNeurons = 10;
+
     [Header("Movement")]
     [SerializeField] float maxSpeed = 1f;
     [SerializeField] float acceleration = 40f;
@@ -39,7 +45,8 @@ public class BirdController : MonoBehaviour
     [SerializeField] bool drawGizmos = false;
 
     Vector3 startPosition, startRotation, lastPosition;
-    [SerializeField] float _speed, _turn;
+    //[SerializeField]
+    float _speed, _turn;
     Ray[] sensors;
     RaycastHit hit;
     public float speed
@@ -67,6 +74,7 @@ public class BirdController : MonoBehaviour
     void Awake()
     {
         SetupVariables();
+        nnet.Initialize(numberOfSensors, hiddenLayers, hiddenNeurons);
     }
     void Update()
     {
@@ -80,7 +88,8 @@ public class BirdController : MonoBehaviour
     void SetupVariables()
     {
         startPosition = transform.position;
-        startRotation = transform.eulerAngles;   
+        startRotation = transform.eulerAngles;
+        lastPosition = transform.position;
         timeSinceStart = 0f;
         totalDistance = 0f;
         avgSpeed = 0f;
@@ -104,6 +113,7 @@ public class BirdController : MonoBehaviour
                 sensorValues[i] = 0;
 
         }
+        (speed, turn) = nnet.RunNetwork(new List<float>(sensorValues));
     }
 
     void Move()
@@ -153,6 +163,7 @@ public class BirdController : MonoBehaviour
         lastPosition = startPosition;
         transform.position = startPosition;
         transform.eulerAngles = startRotation;
+        nnet.Initialize(numberOfSensors, hiddenLayers, hiddenNeurons);
     }
     private void OnCollisionEnter(Collision collision)
     {
