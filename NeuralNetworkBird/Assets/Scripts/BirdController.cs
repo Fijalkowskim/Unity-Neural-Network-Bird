@@ -39,7 +39,7 @@ public class BirdController : MonoBehaviour
     [SerializeField] bool drawGizmos = false;
 
     Vector3 startPosition, startRotation, lastPosition;
-    float _speed, _turn;
+    [SerializeField] float _speed, _turn;
     Ray[] sensors;
     RaycastHit hit;
     public float speed
