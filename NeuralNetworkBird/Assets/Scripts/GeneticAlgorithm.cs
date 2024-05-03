@@ -159,12 +159,16 @@ public class GeneticAlgorithm : MonoBehaviour
     }
     private void Mutate(ref NeuralNetwork nnet)
     {
+        int totalMutatedWeights = 0;
         for (int weight = 0; weight < nnet.weights.Count; weight++)
         {
-            nnet.weights[weight] = MutateMatrix(nnet.weights[weight]);
+            (Matrix<float> newWeights, int mutatedWeights) = MutateMatrix(nnet.weights[weight]);
+            nnet.weights[weight] = newWeights;
+            totalMutatedWeights += mutatedWeights;
         }
+        nnet.mutatedWeights += totalMutatedWeights;
     }
-    Matrix<float> MutateMatrix(Matrix<float> matrix)
+    (Matrix<float>, int) MutateMatrix(Matrix<float> matrix)
     {
         int amountToMutate = UnityEngine.Random.Range(1, matrix.RowCount * matrix.ColumnCount);
         Matrix<float> mutatedMatrix = matrix;
@@ -174,7 +178,7 @@ public class GeneticAlgorithm : MonoBehaviour
             int randomRow = UnityEngine.Random.Range(0, mutatedMatrix.RowCount);
             mutatedMatrix[randomRow, randomColumn] = Mathf.Clamp(mutatedMatrix[randomRow, randomColumn] + UnityEngine.Random.Range(-maxMutationChange, maxMutationChange), -1f, 1f);
         }
-        return mutatedMatrix;
+        return (mutatedMatrix, amountToMutate);
     }
     private void SortPreviousGeneration()
     {

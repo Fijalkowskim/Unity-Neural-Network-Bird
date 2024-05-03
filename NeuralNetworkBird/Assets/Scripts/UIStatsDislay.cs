@@ -9,7 +9,12 @@ public class UIStatsDislay : MonoBehaviour
     [SerializeField] BirdController birdController;
     [SerializeField] GeneticAlgorithm geneticAlgorithm;
     [SerializeField] Slider timeScaleSlider;
-
+    [Header("Simulations stats")]
+    [SerializeField] TextMeshProUGUI simulationGenerationIndex;
+    [SerializeField] TextMeshProUGUI simulationIndex;
+    [SerializeField] TextMeshProUGUI simulationParents;
+    [SerializeField] TextMeshProUGUI simulationMutatedWeigths;
+    [SerializeField] TextMeshProUGUI eliteText;
     float lastTimeScale; 
     void Awake()
     {
@@ -22,6 +27,7 @@ public class UIStatsDislay : MonoBehaviour
 
         timeScaleSlider.value = 0;
         timeScaleSlider.onValueChanged.AddListener(onTimeScaleSliderChange);
+        eliteText.gameObject.SetActive(false);
     }
     private void OnDestroy()
     {
@@ -46,6 +52,19 @@ public class UIStatsDislay : MonoBehaviour
     {
         populationText.text = "Generation " + currentGeneration.ToString();
         simulationText.text = "Simulation " + currentSimulation.ToString() + "/" + totalSimulations.ToString();
+
+        simulationGenerationIndex.text = $"Generation: {nnet.generation}";
+        simulationIndex.text = $"Index: {nnet.index}";
+        simulationParents.text = $"Parents: {(nnet.parentA == null ? "-":nnet.parentA + " + " + nnet.parentB)}";
+        simulationMutatedWeigths.text = $"Mutated weights: {nnet.mutatedWeights}";
+
+        if (nnet.previousFitness >= 0)
+        {
+            eliteText.text = $"Elite {nnet.previousFitness} fitness";
+            eliteText.gameObject.SetActive(true);
+        }
+        else
+            eliteText.gameObject.SetActive(false);
     }
     public void TogglePause()
     {
