@@ -84,7 +84,7 @@ public class GeneticAlgorithm : MonoBehaviour
     public void Death(float fitness)
     {
         generation[currentSimulation].fitness = fitness;
-        simulationsHistory.addFinishedSimulation(generation[currentSimulation]);
+        simulationsHistory.addFinishedSimulation(new SimulationHistoryData(currentGeneration, currentSimulation,generation[currentSimulation]));
         if (currentSimulation < generation.Length - 1)
         {
             currentSimulation++;

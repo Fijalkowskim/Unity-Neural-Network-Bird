@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SimulationsHistory : MonoBehaviour
 {
-    public List<NeuralNetwork> simulationsHistory { get; private set; }
+    public List<SimulationHistoryData> simulationsHistory { get; private set; }
+    public UnityEvent<SimulationHistoryData> onSimulationAdded { get; private set; }
     public void Initialize()
     {
-        simulationsHistory = new List<NeuralNetwork>();
+        simulationsHistory = new List<SimulationHistoryData>();
     }
-    public void addFinishedSimulation(NeuralNetwork nnet)
+    public void addFinishedSimulation(SimulationHistoryData data)
     {
-        simulationsHistory.Add(new NeuralNetwork(nnet));
+        simulationsHistory.Add(data);
+        onSimulationAdded?.Invoke(data);
     }
 }

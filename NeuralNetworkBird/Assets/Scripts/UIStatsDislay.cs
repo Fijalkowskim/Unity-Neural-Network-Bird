@@ -27,20 +27,13 @@ public class UIStatsDislay : MonoBehaviour
         timeScaleSlider.value = 0;
         timeScaleSlider.onValueChanged.AddListener(onTimeScaleSliderChange);
         eliteText.gameObject.SetActive(false);
-
-        
-    }
-    private void OnEnable()
-    {
         GameManager.Instance.onPauseToggle.AddListener(OnPauseToggle);
     }
-    private void OnDisable()
-    {
-        GameManager.Instance.onPauseToggle.RemoveListener(OnPauseToggle);
-    }
+            
     private void OnDestroy()
     {
         timeScaleSlider.onValueChanged.RemoveListener(onTimeScaleSliderChange);
+        GameManager.Instance.onPauseToggle.RemoveListener(OnPauseToggle);
     }
 
     void LateUpdate()
