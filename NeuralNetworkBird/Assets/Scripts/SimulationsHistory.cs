@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class SimulationsHistory : MonoBehaviour
 {
-
-    void Start()
+    public List<NeuralNetwork> simulationsHistory { get; private set; }
+    public void Initialize()
     {
-        
+        simulationsHistory = new List<NeuralNetwork>();
     }
-
-    void Update()
+    public void addFinishedSimulation(NeuralNetwork nnet)
     {
-        
+        simulationsHistory.Add(new NeuralNetwork(nnet));
     }
 }

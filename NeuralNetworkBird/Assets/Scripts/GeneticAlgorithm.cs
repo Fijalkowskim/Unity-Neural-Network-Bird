@@ -8,6 +8,7 @@ public class GeneticAlgorithm : MonoBehaviour
 {
     [SerializeField] BirdController controller;
     [SerializeField] UIStatsDislay uIStatsDislay;
+    [SerializeField] SimulationsHistory simulationsHistory;
 
     [Header("Controls")]
     [Range(1,100)]
@@ -54,6 +55,7 @@ public class GeneticAlgorithm : MonoBehaviour
         amountOfCossovers = Mathf.Clamp((int)(totalSimulations * percentOfCrossovers), 0, totalSimulations - amountOfEliteSelection);
         amountOfCrossoverParents = (int)(totalSimulations * crossoverParentSelectionRate);
         crossoverParentsIndexes = new List<int>();
+        simulationsHistory.Initialize();
         for (int i = 0; i < amountOfCrossoverParents; i++)
         {
             crossoverParentsIndexes.Add(i);
@@ -81,9 +83,10 @@ public class GeneticAlgorithm : MonoBehaviour
 
     public void Death(float fitness)
     {
+        generation[currentSimulation].fitness = fitness;
+        simulationsHistory.addFinishedSimulation(generation[currentSimulation]);
         if (currentSimulation < generation.Length - 1)
         {
-            generation[currentSimulation].fitness = fitness;
             currentSimulation++;
             ResetControllerWithNewSimulation();
         }

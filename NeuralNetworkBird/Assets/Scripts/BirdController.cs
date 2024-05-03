@@ -143,13 +143,13 @@ public class BirdController : MonoBehaviour
 
         if (timeSinceStart >= timeToResetSimulation && fitness <= fitnessToResetSimulation)
         {
-            geneticAlgorithm.Death(fitness, neuralNetwork);
+            geneticAlgorithm.Death(fitness);
             return;
         }    
         if(fitness >= successFitnessValue)
         {
             //Save network
-            geneticAlgorithm.Death(fitness, neuralNetwork);
+            geneticAlgorithm.Death(fitness);
         }
     }
     void Reset()

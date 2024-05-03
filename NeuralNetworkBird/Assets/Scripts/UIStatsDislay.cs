@@ -69,7 +69,7 @@ public class UIStatsDislay : MonoBehaviour
 
         if (nnet.previousFitness >= 0)
         {
-            eliteText.text = $"Elite {nnet.previousFitness} fitness";
+            eliteText.text = $"Elite {nnet.previousFitness.ToString("F2")} fitness";
             eliteText.gameObject.SetActive(true);
         }
         else
