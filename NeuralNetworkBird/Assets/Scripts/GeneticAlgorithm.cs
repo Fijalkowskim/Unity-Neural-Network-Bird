@@ -59,7 +59,6 @@ public class GeneticAlgorithm : MonoBehaviour
             crossoverParentsIndexes.Add(i);
         }
         ResetGenerations();
-        uIStatsDislay.SetGenerationStats(currentGeneration, currentSimulation, totalSimulations);
     }
     void ResetGenerations()
     {
@@ -69,13 +68,14 @@ public class GeneticAlgorithm : MonoBehaviour
         generation = new NeuralNetwork[totalSimulations];
         for (int i = 0; i < totalSimulations; i++)
         {
-            generation[i] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
+            generation[i] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons, currentGeneration, i);
         }
         ResetControllerWithNewSimulation();
     }
 
     private void ResetControllerWithNewSimulation()
     {
+        uIStatsDislay.SetSimulationStats(generation[currentSimulation], currentGeneration, currentSimulation, totalSimulations);
         controller.ResetWithNetwork(generation[currentSimulation]);
     }
 
@@ -90,8 +90,6 @@ public class GeneticAlgorithm : MonoBehaviour
         }
         else
             CreateNewGeneration();
-
-        uIStatsDislay.SetGenerationStats(currentGeneration, currentSimulation, totalSimulations);
     }
 
 
@@ -102,14 +100,15 @@ public class GeneticAlgorithm : MonoBehaviour
         NeuralNetwork[] newGeneration = new NeuralNetwork[totalSimulations];
         newSimulationsCounter = 0;
 
+        currentGeneration++;
+        currentSimulation = 0;
+
         FillWithBestSimulations(ref newGeneration);
         FillWithCrossovers(ref newGeneration);
         FillWithRandomSimulations(ref newGeneration);
 
         generation = newGeneration;
 
-        currentGeneration++;
-        currentSimulation = 0;
 
         ResetControllerWithNewSimulation();
     }
@@ -139,7 +138,7 @@ public class GeneticAlgorithm : MonoBehaviour
             tmpCrossoverParentsIndexes.RemoveAt(randAIndex);
             BIndex = tmpCrossoverParentsIndexes[UnityEngine.Random.Range(0, tmpCrossoverParentsIndexes.Count)];
 
-            NeuralNetwork child = new NeuralNetwork(generation[AIndex], generation[BIndex]);
+            NeuralNetwork child = new NeuralNetwork(generation[AIndex], generation[BIndex], currentGeneration, newSimulationsCounter);
 
             if (UnityEngine.Random.Range(0.0f, 1.0f) < mutationRate) 
                 Mutate(ref child);
@@ -154,7 +153,7 @@ public class GeneticAlgorithm : MonoBehaviour
         int startIndex = newSimulationsCounter;
         for (int i = startIndex; i < newGeneration.Length; i++)
         {
-            newGeneration[newSimulationsCounter] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
+            newGeneration[newSimulationsCounter] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons,currentGeneration, newSimulationsCounter);
             newSimulationsCounter++;
         }
     }

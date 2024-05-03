@@ -12,9 +12,12 @@ public class NeuralNetwork
     public List<Matrix<float>> weights { get; set; }
     public List<float> biases { get; set; }
     public float fitness { get; set; }
+    public int generation { get; set; }
+    public int index { get; set; }
 
-    public NeuralNetwork(int inputNeuronsCount, int hiddenLayersCount, int hiddenNeuronsCount)
+    public NeuralNetwork(int inputNeuronsCount, int hiddenLayersCount, int hiddenNeuronsCount, int generation, int index)
     {
+        this.generation = generation; this.index = index;
         inputLayer = Matrix<float>.Build.Dense(1, inputNeuronsCount);
         hiddenLayers = new List<Matrix<float>>();
         outputLayer = Matrix<float>.Build.Dense(1, 2);
@@ -46,15 +49,19 @@ public class NeuralNetwork
     }
     public NeuralNetwork(NeuralNetwork neuralNetwork)
     {
+        this.generation = generation; this.index = index;
         inputLayer = Matrix<float>.Build.Dense(1, neuralNetwork.inputLayer.ColumnCount);
         hiddenLayers = new List<Matrix<float>>(neuralNetwork.hiddenLayers);
         outputLayer = Matrix<float>.Build.Dense(1, 2);
         weights = new List<Matrix<float>>(neuralNetwork.weights);
         biases = new List<float>(neuralNetwork.biases);
         fitness = 0;
+        index = neuralNetwork.index;
+        generation = neuralNetwork.generation;
     }
-    public NeuralNetwork(NeuralNetwork parentA, NeuralNetwork parentB)
+    public NeuralNetwork(NeuralNetwork parentA, NeuralNetwork parentB, int generation, int index)
     {
+        this.generation = generation; this.index = index;
         inputLayer = Matrix<float>.Build.Dense(1, parentA.inputLayer.ColumnCount);
         hiddenLayers = new List<Matrix<float>>(parentA.hiddenLayers);
         outputLayer = Matrix<float>.Build.Dense(1, 2);
