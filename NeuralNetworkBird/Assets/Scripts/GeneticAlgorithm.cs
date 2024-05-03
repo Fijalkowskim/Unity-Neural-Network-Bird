@@ -79,9 +79,8 @@ public class GeneticAlgorithm : MonoBehaviour
         controller.ResetWithNetwork(generation[currentSimulation]);
     }
 
-    public void Death(float fitness, NeuralNetwork network)
+    public void Death(float fitness)
     {
-        network.fitness = fitness;
         if (currentSimulation < generation.Length - 1)
         {
             generation[currentSimulation].fitness = fitness;

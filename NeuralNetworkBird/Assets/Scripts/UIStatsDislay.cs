@@ -15,8 +15,7 @@ public class UIStatsDislay : MonoBehaviour
     [SerializeField] TextMeshProUGUI simulationParents;
     [SerializeField] TextMeshProUGUI simulationMutatedWeigths;
     [SerializeField] TextMeshProUGUI eliteText;
-    float lastTimeScale; 
-    void Awake()
+    void Start()
     {
         fitnessText.text = 0.ToString();
         distanceText.text = 0.ToString();
@@ -28,6 +27,16 @@ public class UIStatsDislay : MonoBehaviour
         timeScaleSlider.value = 0;
         timeScaleSlider.onValueChanged.AddListener(onTimeScaleSliderChange);
         eliteText.gameObject.SetActive(false);
+
+        
+    }
+    private void OnEnable()
+    {
+        GameManager.Instance.onPauseToggle.AddListener(OnPauseToggle);
+    }
+    private void OnDisable()
+    {
+        GameManager.Instance.onPauseToggle.RemoveListener(OnPauseToggle);
     }
     private void OnDestroy()
     {
@@ -44,8 +53,8 @@ public class UIStatsDislay : MonoBehaviour
     }
     public void onTimeScaleSliderChange(float newValue)
     {
-        if (Time.timeScale == 0) return;
-        Time.timeScale = newValue;
+        if (GameManager.Instance.gamePaused) return;
+        GameManager.Instance.setTimeScale(newValue);
         timeScaleText.text = newValue.ToString("F0");
     }
     public void SetSimulationStats(NeuralNetwork nnet, int currentGeneration, int currentSimulation, int totalSimulations)
@@ -68,18 +77,11 @@ public class UIStatsDislay : MonoBehaviour
     }
     public void TogglePause()
     {
-        if(Time.timeScale != 0)
-        {
-            lastTimeScale = Time.timeScale;
-            Time.timeScale = 0;
-            pauseButtonText.text = "Resume";
-            timeScaleSlider.enabled = false;
-        }
-        else
-        {
-            Time.timeScale = lastTimeScale;
-            pauseButtonText.text = "Pause";
-            timeScaleSlider.enabled = true;
-        }
+        GameManager.Instance.TogglePause();
+    }
+    void OnPauseToggle(bool paused)
+    {
+        pauseButtonText.text = paused ? "Resume" : "Pause";
+        timeScaleSlider.enabled = !paused;
     }
 }

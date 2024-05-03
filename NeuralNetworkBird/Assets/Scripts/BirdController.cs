@@ -169,7 +169,7 @@ public class BirdController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        geneticAlgorithm.Death(fitness, neuralNetwork);
+        geneticAlgorithm.Death(fitness);
     }
     private void OnDrawGizmos()
     {

@@ -59,7 +59,7 @@ public class NeuralNetwork
     {
         index = neuralNetwork.index;
         generation = neuralNetwork.generation;
-        fitness = 0;
+        fitness = neuralNetwork.fitness;
         parentA = neuralNetwork.parentA;
         parentB = neuralNetwork.parentB;
         mutatedWeights = neuralNetwork.mutatedWeights;
