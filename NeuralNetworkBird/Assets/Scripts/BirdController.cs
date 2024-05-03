@@ -154,7 +154,6 @@ public class BirdController : MonoBehaviour
     }
     void Reset()
     {
-        neuralNetwork.fitness = fitness;
         timeSinceStart = 0f;
         totalDistance = 0f;
         avgSpeed = 0f;
@@ -162,7 +161,6 @@ public class BirdController : MonoBehaviour
         lastPosition = startPosition;
         transform.position = startPosition;
         transform.eulerAngles = startRotation;
-
     }
     public void ResetWithNetwork(NeuralNetwork neuralNetwork)
     {

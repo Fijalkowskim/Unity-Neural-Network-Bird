@@ -16,10 +16,6 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] int hiddenNeurons = 10;
     [SerializeField] int totalSimulations = 85;
     
-    [Tooltip("Percent of best simulations picked from previous generation that will be moved to next generation")]
-    [Range(0.0f, 1.0f)]
-    [SerializeField] float eliteSelectionRate = 0.3f;
-
     [Header("Mutation Controls")]
     [Tooltip("Percent to mutate each newly created Neural Network. Mutation takes randomly selected weights and adds or subtracts small amount from it.")]
     [Range(0.0f, 1.0f)]
@@ -28,7 +24,10 @@ public class GeneticAlgorithm : MonoBehaviour
     [Range(0.0f, 1.0f)]
     [SerializeField] float maxMutationChange = 1f;
 
-    [Header("Crossover Controls")]
+    [Header("New Generation Controls")]
+    [Tooltip("Percent of best simulations picked from previous generation that will be moved to next generation")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float eliteSelectionRate = 0.3f;
     [Tooltip("Percent of best simulations from previous generation that will be pick as crossover parents")]
     [Range(0.0f, 1.0f)]
     [SerializeField] float crossoverParentSelectionRate = 0.4f;
@@ -36,10 +35,12 @@ public class GeneticAlgorithm : MonoBehaviour
     [Range(0.0f, 1.0f)]
     [SerializeField] float percentOfCrossovers = 0.5f;
 
-    NeuralNetwork[] generation;
+    [SerializeField] NeuralNetwork[] generation;
 
     int currentGeneration, currentSimulation;
     int amountOfEliteSelection, amountOfCossovers, amountOfCrossoverParents;
+    [Tooltip("Number of already created simulations for new generation")]
+    int newSimulationsCounter;
     List<int> crossoverParentsIndexes;
 
     void Awake()
@@ -63,7 +64,8 @@ public class GeneticAlgorithm : MonoBehaviour
     void ResetGenerations()
     {
         currentGeneration = 0;
-        currentSimulation = 0;
+        currentSimulation = 0; 
+        newSimulationsCounter = 0;
         generation = new NeuralNetwork[totalSimulations];
         for (int i = 0; i < totalSimulations; i++)
         {
@@ -98,6 +100,7 @@ public class GeneticAlgorithm : MonoBehaviour
         SortPreviousGeneration();
 
         NeuralNetwork[] newGeneration = new NeuralNetwork[totalSimulations];
+        newSimulationsCounter = 0;
 
         FillWithBestSimulations(ref newGeneration);
         FillWithCrossovers(ref newGeneration);
@@ -116,11 +119,14 @@ public class GeneticAlgorithm : MonoBehaviour
     void FillWithBestSimulations(ref NeuralNetwork[] newGeneration)
     {
         for (int i = 0; i < amountOfEliteSelection; i++)
-            newGeneration[i] = new NeuralNetwork(generation[i]);
+        {
+            newGeneration[newSimulationsCounter] = new NeuralNetwork(generation[i]);
+            newSimulationsCounter++;
+        }
     }
     private void FillWithCrossovers(ref NeuralNetwork[] newGeneration)
     {
-        if (amountOfCossovers <= 0 || amountOfCrossoverParents < 2 || amountOfEliteSelection >= totalSimulations) return;
+        if (amountOfCossovers <= 0 || amountOfCrossoverParents < 2) return;
         
         int AIndex, BIndex, randAIndex;
 
@@ -138,14 +144,19 @@ public class GeneticAlgorithm : MonoBehaviour
             if (UnityEngine.Random.Range(0.0f, 1.0f) < mutationRate) 
                 Mutate(ref child);
 
-            newGeneration[i] = child;
+            newGeneration[newSimulationsCounter] = child;
+
+            newSimulationsCounter++;
         }
     }
     void FillWithRandomSimulations(ref NeuralNetwork[] newGeneration)
     {
-        if (amountOfCossovers + amountOfEliteSelection >= newGeneration.Length) return;
-        for (int i = amountOfCossovers + amountOfEliteSelection; i < newGeneration.Length; i++)
-            newGeneration[i] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
+        int startIndex = newSimulationsCounter;
+        for (int i = startIndex; i < newGeneration.Length; i++)
+        {
+            newGeneration[newSimulationsCounter] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
+            newSimulationsCounter++;
+        }
     }
     private void Mutate(ref NeuralNetwork nnet)
     {

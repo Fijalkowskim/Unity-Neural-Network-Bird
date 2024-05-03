@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MathNet.Numerics.LinearAlgebra;
 using System;
+[Serializable]
 public class NeuralNetwork 
 {
     Matrix<float> inputLayer;
