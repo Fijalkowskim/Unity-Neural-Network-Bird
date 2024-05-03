@@ -1816,7 +1816,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.12434153, y: 0.000000032235167, z: -0.000000004039519, w: 0.99223953}
+  m_LocalRotation: {x: 0.124341555, y: -8.3685825e-10, z: 1.04870314e-10, w: 0.9922395}
   m_LocalPosition: {x: -1.7747021, y: 3.99, z: -15.639402}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2190,7 +2190,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1122976581}
-  m_LocalRotation: {x: 0.12434153, y: 0.000000032235167, z: -0.000000004039519, w: 0.99223953}
+  m_LocalRotation: {x: 0.124341555, y: -8.3685825e-10, z: 1.04870314e-10, w: 0.9922395}
   m_LocalPosition: {x: -1.7747021, y: 3.99, z: -15.639402}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4354,7 +4354,7 @@ MonoBehaviour:
   successFitnessValue: 3000
   timeToResetSimulation: 20
   fitnessToResetSimulation: 40
-  _numberOfSensors: 20
+  _numberOfSensors: 30
   fieldOfView: 120
   sensorDistance: 200
   sensorMask:

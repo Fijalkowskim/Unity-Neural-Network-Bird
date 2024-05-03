@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MathNet.Numerics.LinearAlgebra;
+using System;
 
 public class GeneticAlgorithm : MonoBehaviour
 {
@@ -13,247 +14,160 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] int hiddenLayers = 2;
     [Range(3, 200)]
     [SerializeField] int hiddenNeurons = 10;
-    [SerializeField] int initialPopulation = 85;
+    [SerializeField] int totalSimulations = 85;
+    
+    [Tooltip("Percent of best simulations picked from previous generation that will be moved to next generation")]
     [Range(0.0f, 1.0f)]
-    [SerializeField] float mutationRate = 0.055f;
+    [SerializeField] float eliteSelectionRate = 0.3f;
+
+    [Header("Mutation Controls")]
+    [Tooltip("Percent to mutate each newly created Neural Network. Mutation takes randomly selected weights and adds or subtracts small amount from it.")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float mutationRate = 0.05f;
+    [Tooltip("Maximum value to add/subtract from mutated weight.")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float maxMutationChange = 1f;
 
     [Header("Crossover Controls")]
-    [SerializeField] int bestAgentSelection = 8;
-    [SerializeField] int worstAgentSelection = 3;
-    [SerializeField] int numberToCrossover;
+    [Tooltip("Percent of best simulations from previous generation that will be pick as crossover parents")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float crossoverParentSelectionRate = 0.4f;
+    [Tooltip("Percent of new generation that will be children of crossovers from previous generation")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float percentOfCrossovers = 0.5f;
 
-    List<int> genePool = new List<int>();
+    NeuralNetwork[] generation;
 
-    int naturallySelected;
+    int currentGeneration, currentSimulation;
+    int amountOfEliteSelection, amountOfCossovers, amountOfCrossoverParents;
+    List<int> crossoverParentsIndexes;
 
-    NeuralNetwork[] population;
-
-    [SerializeField] int currentGeneration;
-    [SerializeField] int currentGenome = 0;
-
-    private void Start()
+    void Awake()
     {
-        CreatePopulation();
-        uIStatsDislay.SetPopulationText(currentGeneration, currentGenome, initialPopulation);
+        ResetAll();
     }
-
-    private void CreatePopulation()
+    public void ResetAll()
     {
-        population = new NeuralNetwork[initialPopulation];
-        FillPopulationWithRandomValues(population, 0);
-        ResetToCurrentGenome();
-    }
-
-    private void ResetToCurrentGenome()
-    {
-        controller.ResetWithNetwork(population[currentGenome]);
-    }
-
-    private void FillPopulationWithRandomValues(NeuralNetwork[] newPopulation, int startingIndex)
-    {
-        while (startingIndex < initialPopulation)
+        if (totalSimulations <= 0) return;
+        amountOfEliteSelection = (int)(totalSimulations * eliteSelectionRate);
+        amountOfCossovers = Mathf.Clamp((int)(totalSimulations * percentOfCrossovers), 0, totalSimulations - amountOfEliteSelection);
+        amountOfCrossoverParents = (int)(totalSimulations * crossoverParentSelectionRate);
+        crossoverParentsIndexes = new List<int>();
+        for (int i = 0; i < amountOfCrossoverParents; i++)
         {
-            newPopulation[startingIndex] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
-            startingIndex++;
+            crossoverParentsIndexes.Add(i);
         }
+        ResetGenerations();
+        uIStatsDislay.SetGenerationStats(currentGeneration, currentSimulation, totalSimulations);
+    }
+    void ResetGenerations()
+    {
+        currentGeneration = 0;
+        currentSimulation = 0;
+        generation = new NeuralNetwork[totalSimulations];
+        for (int i = 0; i < totalSimulations; i++)
+        {
+            generation[i] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
+        }
+        ResetControllerWithNewSimulation();
+    }
+
+    private void ResetControllerWithNewSimulation()
+    {
+        controller.ResetWithNetwork(generation[currentSimulation]);
     }
 
     public void Death(float fitness, NeuralNetwork network)
     {
-        if (currentGenome < population.Length - 1)
+        network.fitness = fitness;
+        if (currentSimulation < generation.Length - 1)
         {
-            population[currentGenome].fitness = fitness;
-            currentGenome++;
-            ResetToCurrentGenome();
-
+            generation[currentSimulation].fitness = fitness;
+            currentSimulation++;
+            ResetControllerWithNewSimulation();
         }
         else
-        {
-            RePopulate();
-        }
-        uIStatsDislay.SetPopulationText(currentGeneration, currentGenome, initialPopulation);
+            CreateNewGeneration();
+
+        uIStatsDislay.SetGenerationStats(currentGeneration, currentSimulation, totalSimulations);
     }
 
 
-    private void RePopulate()
+    private void CreateNewGeneration()
     {
-        genePool.Clear();
+        SortPreviousGeneration();
+
+        NeuralNetwork[] newGeneration = new NeuralNetwork[totalSimulations];
+
+        FillWithBestSimulations(ref newGeneration);
+        FillWithCrossovers(ref newGeneration);
+        FillWithRandomSimulations(ref newGeneration);
+
+        generation = newGeneration;
+
         currentGeneration++;
-        naturallySelected = 0;
-        SortPopulation();
+        currentSimulation = 0;
 
-        NeuralNetwork[] newPopulation = PickBestPopulation();
-
-        Crossover(newPopulation);
-        Mutate(newPopulation);
-
-        FillPopulationWithRandomValues(newPopulation, naturallySelected);
-
-        population = newPopulation;
-
-        currentGenome = 0;
-
-        ResetToCurrentGenome();
-
+        ResetControllerWithNewSimulation();
     }
 
-    private void Mutate(NeuralNetwork[] newPopulation)
+
+
+    void FillWithBestSimulations(ref NeuralNetwork[] newGeneration)
     {
-
-        for (int i = 0; i < naturallySelected; i++)
-        {
-
-            for (int c = 0; c < newPopulation[i].weights.Count; c++)
-            {
-
-                if (Random.Range(0.0f, 1.0f) < mutationRate)
-                {
-                    newPopulation[i].weights[c] = MutateMatrix(newPopulation[i].weights[c]);
-                }
-
-            }
-
-        }
-
+        for (int i = 0; i < amountOfEliteSelection; i++)
+            newGeneration[i] = new NeuralNetwork(generation[i]);
     }
-
-    Matrix<float> MutateMatrix(Matrix<float> A)
+    private void FillWithCrossovers(ref NeuralNetwork[] newGeneration)
     {
-        int randomPoints = Random.Range(1, (A.RowCount * A.ColumnCount) / 7);
+        if (amountOfCossovers <= 0 || amountOfCrossoverParents < 2 || amountOfEliteSelection >= totalSimulations) return;
+        
+        int AIndex, BIndex, randAIndex;
 
-        Matrix<float> C = A;
-
-        for (int i = 0; i < randomPoints; i++)
+        for (int i = amountOfEliteSelection; i < amountOfEliteSelection + amountOfCossovers; i++)
         {
-            int randomColumn = Random.Range(0, C.ColumnCount);
-            int randomRow = Random.Range(0, C.RowCount);
+            List<int> tmpCrossoverParentsIndexes = new List<int>(crossoverParentsIndexes);
 
-            C[randomRow, randomColumn] = Mathf.Clamp(C[randomRow, randomColumn] + Random.Range(-1f, 1f), -1f, 1f);
-        }
+            randAIndex = UnityEngine.Random.Range(0, tmpCrossoverParentsIndexes.Count);
+            AIndex = tmpCrossoverParentsIndexes[randAIndex];
+            tmpCrossoverParentsIndexes.RemoveAt(randAIndex);
+            BIndex = tmpCrossoverParentsIndexes[UnityEngine.Random.Range(0, tmpCrossoverParentsIndexes.Count)];
 
-        return C;
-    }
+            NeuralNetwork child = new NeuralNetwork(generation[AIndex], generation[BIndex]);
 
-    private void Crossover(NeuralNetwork[] newPopulation)
-    {
-        for (int i = 0; i < numberToCrossover; i += 2)
-        {
-            int AIndex = i;
-            int BIndex = i + 1;
+            if (UnityEngine.Random.Range(0.0f, 1.0f) < mutationRate) 
+                Mutate(ref child);
 
-            if (genePool.Count >= 1)
-            {
-                for (int l = 0; l < 100; l++)
-                {
-                    AIndex = genePool[Random.Range(0, genePool.Count)];
-                    BIndex = genePool[Random.Range(0, genePool.Count)];
-
-                    if (AIndex != BIndex)
-                        break;
-                }
-            }
-
-            NeuralNetwork Child1 = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
-            NeuralNetwork Child2 = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
-
-            Child1.fitness = 0;
-            Child2.fitness = 0;
-
-
-            for (int w = 0; w < Child1.weights.Count; w++)
-            {
-
-                if (Random.Range(0.0f, 1.0f) < 0.5f)
-                {
-                    Child1.weights[w] = population[AIndex].weights[w];
-                    Child2.weights[w] = population[BIndex].weights[w];
-                }
-                else
-                {
-                    Child2.weights[w] = population[AIndex].weights[w];
-                    Child1.weights[w] = population[BIndex].weights[w];
-                }
-
-            }
-
-
-            for (int w = 0; w < Child1.biases.Count; w++)
-            {
-
-                if (Random.Range(0.0f, 1.0f) < 0.5f)
-                {
-                    Child1.biases[w] = population[AIndex].biases[w];
-                    Child2.biases[w] = population[BIndex].biases[w];
-                }
-                else
-                {
-                    Child2.biases[w] = population[AIndex].biases[w];
-                    Child1.biases[w] = population[BIndex].biases[w];
-                }
-
-            }
-
-            newPopulation[naturallySelected] = Child1;
-            naturallySelected++;
-
-            newPopulation[naturallySelected] = Child2;
-            naturallySelected++;
-
+            newGeneration[i] = child;
         }
     }
-
-    private NeuralNetwork[] PickBestPopulation()
+    void FillWithRandomSimulations(ref NeuralNetwork[] newGeneration)
     {
-
-        NeuralNetwork[] newPopulation = new NeuralNetwork[initialPopulation];
-
-        for (int i = 0; i < bestAgentSelection; i++)
-        {
-            newPopulation[naturallySelected] = new NeuralNetwork(population[i]);
-            newPopulation[naturallySelected].fitness = 0;
-            naturallySelected++;
-
-            int f = Mathf.RoundToInt(population[i].fitness * 10);
-
-            for (int c = 0; c < f; c++)
-            {
-                genePool.Add(i);
-            }
-
-        }
-
-        for (int i = 0; i < worstAgentSelection; i++)
-        {
-            int last = population.Length - 1;
-            last -= i;
-
-            int f = Mathf.RoundToInt(population[last].fitness * 10);
-
-            for (int c = 0; c < f; c++)
-            {
-                genePool.Add(last);
-            }
-
-        }
-
-        return newPopulation;
-
+        if (amountOfCossovers + amountOfEliteSelection >= newGeneration.Length) return;
+        for (int i = amountOfCossovers + amountOfEliteSelection; i < newGeneration.Length; i++)
+            newGeneration[i] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons);
     }
-
-    private void SortPopulation()
+    private void Mutate(ref NeuralNetwork nnet)
     {
-        for (int i = 0; i < population.Length; i++)
+        for (int weight = 0; weight < nnet.weights.Count; weight++)
         {
-            for (int j = i; j < population.Length; j++)
-            {
-                if (population[i].fitness < population[j].fitness)
-                {
-                    NeuralNetwork temp = population[i];
-                    population[i] = population[j];
-                    population[j] = temp;
-                }
-            }
+            nnet.weights[weight] = MutateMatrix(nnet.weights[weight]);
         }
-
+    }
+    Matrix<float> MutateMatrix(Matrix<float> matrix)
+    {
+        int amountToMutate = UnityEngine.Random.Range(1, matrix.RowCount * matrix.ColumnCount);
+        Matrix<float> mutatedMatrix = matrix;
+        for (int i = 0; i < amountToMutate; i++)
+        {
+            int randomColumn = UnityEngine.Random.Range(0, mutatedMatrix.ColumnCount);
+            int randomRow = UnityEngine.Random.Range(0, mutatedMatrix.RowCount);
+            mutatedMatrix[randomRow, randomColumn] = Mathf.Clamp(mutatedMatrix[randomRow, randomColumn] + UnityEngine.Random.Range(-maxMutationChange, maxMutationChange), -1f, 1f);
+        }
+        return mutatedMatrix;
+    }
+    private void SortPreviousGeneration()
+    {
+        Array.Sort(generation, (nn1, nn2) => nn2.fitness.CompareTo(nn1.fitness));
     }
 }

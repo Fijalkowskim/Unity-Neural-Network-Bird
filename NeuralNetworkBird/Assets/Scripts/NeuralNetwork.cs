@@ -52,6 +52,25 @@ public class NeuralNetwork
         biases = new List<float>(neuralNetwork.biases);
         fitness = 0;
     }
+    public NeuralNetwork(NeuralNetwork parentA, NeuralNetwork parentB)
+    {
+        inputLayer = Matrix<float>.Build.Dense(1, parentA.inputLayer.ColumnCount);
+        hiddenLayers = new List<Matrix<float>>(parentA.hiddenLayers);
+        outputLayer = Matrix<float>.Build.Dense(1, 2);
+        weights = new List<Matrix<float>>(parentA.weights);
+        biases = new List<float>(parentA.biases);
+        fitness = 0;
+        for (int i = 0; i < weights.Count; i++)
+        {
+            if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.5f)
+                weights[i] = parentB.weights[i];
+        }
+        for (int i = 0; i < biases.Count; i++)
+        {
+            if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.5f)
+                biases[i] = parentB.biases[i];
+        }
+    }
 
     public void RandomiseWeights()
     {

@@ -37,7 +37,7 @@ public class UIStatsDislay : MonoBehaviour
     {
         Time.timeScale = newValue;
     }
-    public void SetPopulationText(int currentPopulation, int currentSimulation, int totalSimulations)
+    public void SetGenerationStats(int currentPopulation, int currentSimulation, int totalSimulations)
     {
         populationText.text = "Population " + currentPopulation.ToString();
         simulationText.text = "Simulation " + currentSimulation.ToString() + "/" + totalSimulations.ToString();
