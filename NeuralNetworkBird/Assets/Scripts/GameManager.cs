@@ -28,6 +28,7 @@ private void Awake()
     }
     void Init()
     {
+        onPauseToggle = new UnityEvent<bool>();
         gamePaused = false;
         timeScale = 1;
     }

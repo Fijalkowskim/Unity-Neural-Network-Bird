@@ -7,6 +7,10 @@ public class SimulationsHistory : MonoBehaviour
 {
     public List<SimulationHistoryData> simulationsHistory { get; private set; }
     public UnityEvent<SimulationHistoryData> onSimulationAdded { get; private set; }
+    private void Awake()
+    {
+        onSimulationAdded = new UnityEvent<SimulationHistoryData>();
+    }
     public void Initialize()
     {
         simulationsHistory = new List<SimulationHistoryData>();
