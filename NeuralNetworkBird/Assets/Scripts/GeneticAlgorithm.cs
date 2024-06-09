@@ -85,6 +85,7 @@ public class GeneticAlgorithm : MonoBehaviour
     {
         generation[currentSimulation].fitness = fitness;
         simulationsHistory.addFinishedSimulation(new SimulationHistoryData(currentGeneration, currentSimulation,generation[currentSimulation]));
+        FileManager.Instance.SaveNetworkToJSON(generation[currentSimulation]);
         if (currentSimulation < generation.Length - 1)
         {
             currentSimulation++;

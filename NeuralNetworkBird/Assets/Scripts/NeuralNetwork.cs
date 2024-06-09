@@ -6,9 +6,9 @@ using System;
 [Serializable]
 public class NeuralNetwork 
 {
-    Matrix<float> inputLayer;
-    List<Matrix<float>> hiddenLayers;
-    Matrix<float> outputLayer;
+    public Matrix<float> inputLayer;
+    public List<Matrix<float>> hiddenLayers;
+    public Matrix<float> outputLayer;
     public List<Matrix<float>> weights { get; set; }
     public List<float> biases { get; set; }
     public float fitness { get; set; }
