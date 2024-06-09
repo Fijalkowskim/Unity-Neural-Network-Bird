@@ -9,6 +9,7 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] BirdController controller;
     [SerializeField] UIStatsDislay uIStatsDislay;
     [SerializeField] SimulationsHistory simulationsHistory;
+    [SerializeField] SimulationsHistoryUIDisplay simulationsHistoryUIDisplay;
 
     [Header("Controls")]
     [Range(1,100)]
@@ -85,17 +86,25 @@ public class GeneticAlgorithm : MonoBehaviour
     {
         generation[currentSimulation].fitness = fitness;
         simulationsHistory.addFinishedSimulation(new SimulationHistoryData(currentGeneration, currentSimulation,generation[currentSimulation]));
-        FileManager.Instance.SaveNetworkToJSON(generation[currentSimulation]);
+        
+
         if (currentSimulation < generation.Length - 1)
         {
             currentSimulation++;
             ResetControllerWithNewSimulation();
         }
         else
+        {
             CreateNewGeneration();
+            simulationsHistoryUIDisplay.NewGeneration(currentGeneration);
+        }
     }
 
-
+    public void SaveNetworkToFile(int index, int generationIndex)
+    {
+        if (index >= generation.Length || index < 0 || generationIndex != currentGeneration) return;
+        FileManager.Instance.SaveNetworkToJSON(generation[index]);
+    }
     private void CreateNewGeneration()
     {
         SortPreviousGeneration();

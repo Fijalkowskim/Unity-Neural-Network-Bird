@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 public class FileManager : MonoBehaviour
 {
     public static FileManager Instance { get; private set; }
-    const string path = "/saved";
+    const string path = "/Saved-Neural-Networks";
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -25,28 +25,17 @@ public class FileManager : MonoBehaviour
     }
     public void SaveNetworkToJSON(NeuralNetwork nnet)
     {
-        string newPath = Application.dataPath + path + "/SavedBrains";
-        if (!System.IO.Directory.Exists(newPath))
+        string newPath = Application.dataPath + path;
+        if (!Directory.Exists(newPath))
         {
-            Directory.CreateDirectory(newPath);
-           
+            Directory.CreateDirectory(newPath);  
         }
-        Debug.Log("Neural network saved to: " + new DirectoryInfo(newPath).FullName);
-
         string ID = DateTime.Now.Ticks.ToString();
-        string json = JsonConvert.SerializeObject(nnet);
-        File.WriteAllText(newPath + "/nnet-" + ID + ".txt", json);
-        NeuralNetwork newNew = (NeuralNetwork) JsonConvert.DeserializeObject(json);
-        /*string json = JsonConvert.SerializeObject(nnet.inputLayer.ToArray());
+        string fileName = "/nnet" + nnet.generation + "-" + nnet.index + "-" + ID + ".txt";
 
-        File.WriteAllText(newPath + "/inputLayer_" + ID + ".txt", json);
-        json = JsonConvert.SerializeObject(nnet.hiddenLayers.ToArray());
-        File.WriteAllText(newPath + "/hiddenLayers_" + ID + ".txt", json);
-        json = JsonConvert.SerializeObject(nnet.outputLayer.ToArray());
-        File.WriteAllText(newPath + "/outputLayers_" + ID + ".txt", json);
-        json = JsonConvert.SerializeObject(nnet.weights.ToArray());
-        File.WriteAllText(newPath + "/weights_" + ID + ".txt", json);
-        json = JsonConvert.SerializeObject(nnet.biases.ToArray());
-        File.WriteAllText(newPath + "/biases_" + ID + ".txt", json);*/
+        Debug.Log("Neural network saved as: " + fileName);
+
+        string json = JsonConvert.SerializeObject(nnet);
+        File.WriteAllText(newPath + fileName, json);
     }
 }

@@ -9,6 +9,8 @@ public class SimulationsHistoryUIDisplay : MonoBehaviour
     [SerializeField] VerticalLayoutGroup layoutGroup;
     [SerializeField] SimulationCard simulationCardPrefab;
     [SerializeField] CanvasGroup panel;
+    List<SimulationCard> simulationCards;
+    [SerializeField] GeneticAlgorithm geneticAlgorithm;
     void Start()
     {
         ClearContent();
@@ -16,6 +18,7 @@ public class SimulationsHistoryUIDisplay : MonoBehaviour
         DisablePanel();
         simulationsHistory.onSimulationAdded.AddListener(UpdateContent);
         GameManager.Instance.onPauseToggle.AddListener(OnPauseToggle);
+        simulationCards = new List<SimulationCard>();
     }
     private void OnDestroy()
     {
@@ -41,7 +44,8 @@ public class SimulationsHistoryUIDisplay : MonoBehaviour
     void UpdateContent(SimulationHistoryData data)
     {
         SimulationCard instance = Instantiate(simulationCardPrefab, layoutGroup.GetComponent<RectTransform>());
-        instance.Init(data);
+        instance.Init(data, geneticAlgorithm);
+        simulationCards.Add(instance);
         SetContentHeight();
     }
     void SetContentHeight()
@@ -70,6 +74,16 @@ public class SimulationsHistoryUIDisplay : MonoBehaviour
         foreach (RectTransform child in layoutGroup.transform)
         {
             Destroy(child.gameObject);
+        }
+    }
+    public void NewGeneration(int newGenerationIndex)
+    {
+        foreach (SimulationCard card in simulationCards)
+        {
+            if(card.generation != newGenerationIndex)
+            {
+                card.DisactivateButton();
+            }
         }
     }
 }
