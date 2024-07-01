@@ -14,7 +14,7 @@ public class SimulationCard : MonoBehaviour
     public int index { get; private set; }
     public void Init(SimulationHistoryData data, GeneticAlgorithm geneticAlgorithm)
     {
-        dataText.text = $"Gen {data.generation} | Sim {data.index} | Fitness {data.nnet.fitness}";
+        dataText.text = $"Gen {data.generation} | Sim {data.index} | Fitness {data.nnet.fitness.ToString("F2")}";
         this.generation = data.generation;
         this.index = data.index;
         onSaveButtonClick = new UnityEvent<int, int>();

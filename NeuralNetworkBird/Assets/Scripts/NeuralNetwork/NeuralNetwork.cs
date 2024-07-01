@@ -18,83 +18,75 @@ public class NeuralNetwork
     public string parentB { get; set; }
     public int mutatedWeights { get; set; }
     public float previousFitness { get; set; }
-
-    public NeuralNetwork(int inputNeuronsCount, int hiddenLayersCount, int hiddenNeuronsCount, int generation, int index)
+    public void Init(int inputNeuronsCount, int generation, int index)
     {
-        this.generation = generation; this.index = index;
-        parentA = null;
-        parentB = null;
+        this.generation = generation; 
+        this.index = index;
         mutatedWeights = 0;
         fitness = 0;
-        previousFitness = -1;
 
         inputLayer = Matrix<float>.Build.Dense(1, inputNeuronsCount);
         hiddenLayers = new List<Matrix<float>>();
         outputLayer = Matrix<float>.Build.Dense(1, 2);
         weights = new List<Matrix<float>>();
         biases = new List<float>();
-        
-        for (int i = 0; i < hiddenLayersCount + 1; i++)
+
+        float hiddenLayersCount = inputNeuronsCount - 3;
+
+        for (int i = 1; i < hiddenLayersCount + 1; i++)
         {
+            int hiddenNeuronsCount = inputNeuronsCount - i;
             Matrix<float> f = Matrix<float>.Build.Dense(1, hiddenNeuronsCount);
             hiddenLayers.Add(f);
             biases.Add(UnityEngine.Random.Range(-1f, 1f));
 
-            if (i == 0)
-            {
-                Matrix<float> inputToH1 = Matrix<float>.Build.Dense(inputNeuronsCount, hiddenNeuronsCount);
-                weights.Add(inputToH1);
-            }
-            Matrix<float> HiddenToHidden = Matrix<float>.Build.Dense(hiddenNeuronsCount, hiddenNeuronsCount);
-            weights.Add(HiddenToHidden);
+            Matrix<float> weightsMatrix = Matrix<float>.Build.Dense(hiddenNeuronsCount + 1, hiddenNeuronsCount);
+            weights.Add(weightsMatrix);
         }
 
-        Matrix<float> OutputWeight = Matrix<float>.Build.Dense(hiddenNeuronsCount, 2);
+        Matrix<float> OutputWeight = Matrix<float>.Build.Dense(3, 2);
         weights.Add(OutputWeight);
         biases.Add(UnityEngine.Random.Range(-1f, 1f));
+    }
+
+    public NeuralNetwork(int inputNeuronsCount, int generation, int index)
+    {
+        Init(inputNeuronsCount, generation, index);
+        parentA = null;
+        parentB = null;
+        previousFitness = -1;
 
         RandomiseWeights();
     }
     public NeuralNetwork(NeuralNetwork neuralNetwork)
     {
-        index = neuralNetwork.index;
-        generation = neuralNetwork.generation;
-        fitness = neuralNetwork.fitness;
+        Init(neuralNetwork.inputLayer.ColumnCount, generation, index);
         parentA = neuralNetwork.parentA;
         parentB = neuralNetwork.parentB;
+        fitness = neuralNetwork.fitness;
+
         mutatedWeights = neuralNetwork.mutatedWeights;
         previousFitness = neuralNetwork.fitness;
 
-        inputLayer = Matrix<float>.Build.Dense(1, neuralNetwork.inputLayer.ColumnCount);
-        hiddenLayers = new List<Matrix<float>>(neuralNetwork.hiddenLayers);
-        outputLayer = Matrix<float>.Build.Dense(1, 2);
         weights = new List<Matrix<float>>(neuralNetwork.weights);
-        biases = new List<float>(neuralNetwork.biases);
-       
+        biases = new List<float>(neuralNetwork.biases);  
     }
     public NeuralNetwork(NeuralNetwork parentA, NeuralNetwork parentB, int generation, int index)
     {
-        this.generation = generation; this.index = index;
+        Init(parentA.inputLayer.ColumnCount, generation, index);
+
         this.parentA = "Gen " + parentA.generation.ToString() + "/" + parentA.index.ToString();
         this.parentB = "Gen " + parentB.generation.ToString() + "/" + parentB.index.ToString();
-        mutatedWeights = 0;
-        fitness = 0;
-        previousFitness = -1;
 
-        inputLayer = Matrix<float>.Build.Dense(1, parentA.inputLayer.ColumnCount);
-        hiddenLayers = new List<Matrix<float>>(parentA.hiddenLayers);
-        outputLayer = Matrix<float>.Build.Dense(1, 2);
-        weights = new List<Matrix<float>>(parentA.weights);
-        biases = new List<float>(parentA.biases);
+        previousFitness = -1;
+        
         for (int i = 0; i < weights.Count; i++)
         {
-            if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.5f)
-                weights[i] = parentB.weights[i];
+            weights[i] = (parentA.weights[i] + parentB.weights[i]) / 2f;
         }
         for (int i = 0; i < biases.Count; i++)
         {
-            if (UnityEngine.Random.Range(0.0f, 1.0f) < 0.5f)
-                biases[i] = parentB.biases[i];
+            biases[i] = (parentA.biases[i] + parentB.biases[i]) / 2f;
         }
     }
 
@@ -113,7 +105,7 @@ public class NeuralNetwork
         }
     }
 
-    public (float, float) RuNeuralNetworkwork(List<float> sensorValues)
+    public (float, float) RunNeuralNetworkwork(List<float> sensorValues)
     {
         if (sensorValues.Count != inputLayer.ColumnCount) return (0, 0);
         for (int i = 0; i < sensorValues.Count; i++)
@@ -122,12 +114,18 @@ public class NeuralNetwork
         }
 
         inputLayer = inputLayer.PointwiseTanh();
+    
 
-        hiddenLayers[0] = ((inputLayer * weights[0]) + biases[0]).PointwiseTanh();
-
-        for (int i = 1; i < hiddenLayers.Count; i++)
+        for (int i = 0; i < hiddenLayers.Count; i++)
         {
-            hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i]) + biases[i]).PointwiseTanh();
+            if (i == 0)
+            {
+                hiddenLayers[0] = ((inputLayer * weights[0]) + biases[0]).PointwiseTanh();
+            }
+            else
+            {
+                hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i]) + biases[i]).PointwiseTanh();
+            }
         }
 
         outputLayer = ((hiddenLayers[hiddenLayers.Count - 1] * weights[weights.Count - 1]) + biases[biases.Count - 1]).PointwiseTanh();

@@ -685,7 +685,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 113547027}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1738971919}
+        m_TargetAssemblyTypeName: GenerationSummaryUI, Assembly-CSharp
+        m_MethodName: StoptGenerationSummary
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &113547027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1743,6 +1755,82 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &653013623
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 653013624}
+  - component: {fileID: 653013626}
+  - component: {fileID: 653013625}
+  m_Layer: 5
+  m_Name: Stats popup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &653013624
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653013623}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1738971916}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &653013625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653013623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.9137255}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &653013626
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 653013623}
+  m_CullTransparentMesh: 1
 --- !u!1 &699647519
 GameObject:
   m_ObjectHideFlags: 0
@@ -5462,6 +5550,7 @@ GameObject:
   - component: {fileID: 1738971915}
   - component: {fileID: 1738971914}
   - component: {fileID: 1738971913}
+  - component: {fileID: 1738971919}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -5547,6 +5636,7 @@ RectTransform:
   - {fileID: 2031697879}
   - {fileID: 1939867050}
   - {fileID: 1798789498}
+  - {fileID: 653013624}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5575,6 +5665,7 @@ MonoBehaviour:
   simulationText: {fileID: 754123641}
   timeScaleText: {fileID: 2049477019}
   pauseButtonText: {fileID: 1640347470}
+  statsWrapper: {fileID: 2031697878}
   birdController: {fileID: 8907535795896029988}
   geneticAlgorithm: {fileID: 1808684254}
   timeScaleSlider: {fileID: 1844060343}
@@ -5600,6 +5691,21 @@ MonoBehaviour:
   simulationCardPrefab: {fileID: 3759975296146145816, guid: b1b2cf9f40fefeb4d93cf45deaa7f459, type: 3}
   panel: {fileID: 1939867053}
   geneticAlgorithm: {fileID: 1808684254}
+--- !u!114 &1738971919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1738971912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15782599a6eab104fa9a571d7e25aa8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wrapperUi: {fileID: 1798789497}
+  avgFitness: {fileID: 856521933}
+  comparedToPrev: {fileID: 512683585}
 --- !u!1 &1798789497
 GameObject:
   m_ObjectHideFlags: 0
@@ -5618,7 +5724,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1798789498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5723,14 +5829,13 @@ MonoBehaviour:
   uIStatsDislay: {fileID: 1738971917}
   simulationsHistory: {fileID: 2128595586}
   simulationsHistoryUIDisplay: {fileID: 1738971918}
-  hiddenLayers: 2
-  hiddenNeurons: 10
+  birdController: {fileID: 8907535795896029988}
   totalSimulations: 10
   mutationRate: 0.055
   maxMutationChange: 1
-  eliteSelectionRate: 0.663
-  crossoverParentSelectionRate: 0.283
-  percentOfCrossovers: 0.473
+  eliteSelectionRate: 0.6
+  crossoverParentSelectionRate: 0.4
+  percentOfCrossovers: 0.3
   generation: []
 --- !u!4 &1808684255
 Transform:

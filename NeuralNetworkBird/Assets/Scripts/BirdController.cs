@@ -37,6 +37,7 @@ public class BirdController : MonoBehaviour
     [SerializeField] float maxTurnSpeed = 2f;
     [SerializeField] float turnAcceleration = 20f;
 
+
     [Space(2)]
     [SerializeField] bool drawGizmos = false;
 
@@ -111,7 +112,7 @@ public class BirdController : MonoBehaviour
                 sensorValues[i] = 0;
 
         }
-        (speed, turn) = neuralNetwork.RuNeuralNetworkwork(new List<float>(sensorValues));
+        (speed, turn) = neuralNetwork.RunNeuralNetworkwork(new List<float>(sensorValues));
     }
 
     void Move()

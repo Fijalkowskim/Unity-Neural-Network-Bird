@@ -10,12 +10,15 @@ public class GeneticAlgorithm : MonoBehaviour
     [SerializeField] UIStatsDislay uIStatsDislay;
     [SerializeField] SimulationsHistory simulationsHistory;
     [SerializeField] SimulationsHistoryUIDisplay simulationsHistoryUIDisplay;
+    [SerializeField] BirdController birdController;
 
     [Header("Controls")]
-    [Range(1,100)]
-    [SerializeField] int hiddenLayers = 2;
-    [Range(3, 200)]
-    [SerializeField] int hiddenNeurons = 10;
+    //[Range(1,100)]
+    //[SerializeField] 
+    int hiddenLayers = 0;
+    //[Range(3, 200)]
+    //[SerializeField]
+    int hiddenNeurons = 10;
     [SerializeField] int totalSimulations = 85;
     
     [Header("Mutation Controls")]
@@ -30,12 +33,14 @@ public class GeneticAlgorithm : MonoBehaviour
     [Tooltip("Percent of best simulations picked from previous generation that will be moved to next generation")]
     [Range(0.0f, 1.0f)]
     [SerializeField] float eliteSelectionRate = 0.3f;
-    [Tooltip("Percent of best simulations from previous generation that will be pick as crossover parents")]
-    [Range(0.0f, 1.0f)]
-    [SerializeField] float crossoverParentSelectionRate = 0.4f;
     [Tooltip("Percent of new generation that will be children of crossovers from previous generation")]
     [Range(0.0f, 1.0f)]
     [SerializeField] float percentOfCrossovers = 0.5f;
+    [Tooltip("Percent of best simulations from previous generation that will be pick as crossover parents")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float crossoverParentSelectionRate = 0.4f;
+    
+    
 
     [SerializeField] NeuralNetwork[] generation;
 
@@ -82,7 +87,7 @@ public class GeneticAlgorithm : MonoBehaviour
         generation = new NeuralNetwork[totalSimulations];
         for (int i = 0; i < totalSimulations; i++)
         {
-            generation[i] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons, currentGeneration, i);
+            generation[i] = new NeuralNetwork(controller.numberOfSensors, currentGeneration, i);
         }
         ResetControllerWithNewSimulation();
     }
@@ -97,7 +102,6 @@ public class GeneticAlgorithm : MonoBehaviour
     {
         generation[currentSimulation].fitness = fitness;
         simulationsHistory.addFinishedSimulation(new SimulationHistoryData(currentGeneration, currentSimulation, generation[currentSimulation]));
-
 
         if (currentSimulation < generation.Length - 1)
         {
@@ -165,6 +169,7 @@ public class GeneticAlgorithm : MonoBehaviour
         for (int i = 0; i < amountOfEliteSelection; i++)
         {
             newGeneration[newSimulationsCounter] = new NeuralNetwork(generation[i]);
+            newGeneration[newSimulationsCounter].fitness = 0;
             newSimulationsCounter++;
         }
     }
@@ -198,7 +203,7 @@ public class GeneticAlgorithm : MonoBehaviour
         int startIndex = newSimulationsCounter;
         for (int i = startIndex; i < newGeneration.Length; i++)
         {
-            newGeneration[newSimulationsCounter] = new NeuralNetwork(controller.numberOfSensors, hiddenLayers, hiddenNeurons,currentGeneration, newSimulationsCounter);
+            newGeneration[newSimulationsCounter] = new NeuralNetwork(controller.numberOfSensors,currentGeneration, newSimulationsCounter);
             newSimulationsCounter++;
         }
     }
