@@ -26,9 +26,9 @@ public class BirdController : MonoBehaviour
     [Range(2, 30)]
     [SerializeField] int _numberOfSensors = 3;
     [Range(30,200)]
-    [SerializeField] int fieldOfView = 120;
+    [SerializeField] public int fieldOfView = 120;
     [Range(10,1000)]
-    [SerializeField] float sensorDistance = 200f;
+    [SerializeField] public float sensorDistance = 200f;
     [SerializeField] LayerMask sensorMask;
     [SerializeField] SensorAnalizer sensorAnalizer;
 

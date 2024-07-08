@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using MathNet.Numerics.LinearAlgebra;
 using System;
+using System.IO;
 
 public class GeneticAlgorithm : MonoBehaviour
 {
+    [SerializeField] bool saveGenerationToFile = false;
+    const string path = "/Gemeration-Summary";
+    string savePath;
+
     [SerializeField] BirdController controller;
     [SerializeField] UIStatsDislay uIStatsDislay;
     [SerializeField] SimulationsHistory simulationsHistory;
@@ -62,7 +67,31 @@ public class GeneticAlgorithm : MonoBehaviour
     void Awake()
     {
         ResetAll();
+        if (saveGenerationToFile) SetupFiles();
     }
+    void SetupFiles()
+    {
+        savePath = Application.dataPath + path;
+        if (!Directory.Exists(savePath))
+        {
+            Directory.CreateDirectory(savePath);
+        }
+        string fileName = "/ImportantParameters.txt";
+
+        ImportantParameters parameters = new ImportantParameters();
+        parameters.totalSimulations = totalSimulations;
+        parameters.mutationRate = mutationRate;
+        parameters.eliteSelection = eliteSelectionRate;
+        parameters.percentOfCrossovers = percentOfCrossovers;
+        parameters.numberOfSensors = birdController.numberOfSensors;
+        parameters.fieldOfView = birdController.fieldOfView;
+        parameters.sensorDistance = birdController.sensorDistance;
+
+        File.WriteAllText(savePath + fileName, parameters.ToString());
+
+        string generationFileName = "/GenerationSummary.csv";
+        File.WriteAllText(savePath + generationFileName,"generation,fitness");
+    } 
     public void ResetAll()
     {
         if (totalSimulations <= 0) return;
@@ -106,7 +135,7 @@ public class GeneticAlgorithm : MonoBehaviour
             currentSimulation++;
             ResetControllerWithNewSimulation();
         }
-        else
+        else //End of generation
         {
             //Display summary screen
             if (newSummaryData != null)
@@ -114,6 +143,7 @@ public class GeneticAlgorithm : MonoBehaviour
                 lastSummaryData = newSummaryData;
             }
             newSummaryData = new GenerationSummaryData(CalculateAvgFitness(), lastSummaryData);
+            if (saveGenerationToFile) AddGenerationSummaryToFile(newSummaryData, currentGeneration);
             GameManager.Instance.StartGenerationSummary(newSummaryData);
         }
     }
@@ -231,5 +261,10 @@ public class GeneticAlgorithm : MonoBehaviour
     private void SortPreviousGeneration()
     {
         Array.Sort(generation, (nn1, nn2) => nn2.fitness.CompareTo(nn1.fitness));
+    }
+    void AddGenerationSummaryToFile(GenerationSummaryData generationSummaryData, int generationIndex)
+    {
+        string generationFileName = "/GenerationSummary.csv";
+        File.AppendAllText(savePath + generationFileName, $"\n{generationIndex},{generationSummaryData.avgFitness.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
     }
 }
