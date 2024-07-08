@@ -13,6 +13,9 @@ public class GameManager : MonoBehaviour
     public UnityEvent<GenerationSummaryData> onGenerationSummary{ get; private set; }
     public UnityEvent onGenerationSummaryEnd{ get; private set; }
 
+    [SerializeField] bool skipSummary = false;
+    [SerializeField] GenerationSummaryUI generationSummaryUI;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -66,6 +69,10 @@ public class GameManager : MonoBehaviour
         generationSummary = true;
         onPauseToggle?.Invoke(true);
         onGenerationSummary?.Invoke(generationSummaryData);
+        if (skipSummary)
+        {
+            generationSummaryUI.StoptGenerationSummary();
+        }
     }
     public void StopGenerationSummary()
     {

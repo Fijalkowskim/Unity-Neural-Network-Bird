@@ -30,6 +30,7 @@ public class BirdController : MonoBehaviour
     [Range(10,1000)]
     [SerializeField] float sensorDistance = 200f;
     [SerializeField] LayerMask sensorMask;
+    [SerializeField] SensorAnalizer sensorAnalizer;
 
     [Header("Movement")]
     [SerializeField] float maxSpeed = 1f;
@@ -78,6 +79,7 @@ public class BirdController : MonoBehaviour
         if (neuralNetwork == null) return;
         Move();
         CalculateFintess();
+        SensorAnalizerInput();
     }
     private void FixedUpdate()
     {
@@ -106,13 +108,38 @@ public class BirdController : MonoBehaviour
             Vector3 sensorDirection = Quaternion.Euler(0, startAngle + i * angleBetweenSensors, 0) * transform.forward;
             Ray sensorRay = new Ray(transform.position, sensorDirection);
             sensors[i] = sensorRay;
-            if (Physics.Raycast(sensorRay, out hit, sensorDistance, sensorMask))
+            if (Physics.Raycast(sensorRay, out hit, sensorDistance, sensorMask)) { 
                 sensorValues[i] = hit.distance / sensorDistance;
+                if (sensorAnalizer.currentSensor == i)
+                {
+                    sensorAnalizer.UpdateSensorValue(sensorDirection, sensorDistance, true);
+                }
+            }
             else
+            {
                 sensorValues[i] = 0;
+                if (sensorAnalizer.currentSensor == i)
+                {
+                    sensorAnalizer.UpdateSensorValue(sensorDirection, sensorDistance, false);
+                }
+            }
 
+           
         }
         (speed, turn) = neuralNetwork.RunNeuralNetworkwork(new List<float>(sensorValues));
+
+        sensorAnalizer.AnalizeSensors(sensorValues, speed, turn);
+    }
+    void SensorAnalizerInput()
+    {
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            sensorAnalizer.currentSensor = sensorAnalizer.currentSensor >= numberOfSensors - 1 ? 0 : sensorAnalizer.currentSensor + 1;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            sensorAnalizer.currentSensor = sensorAnalizer.currentSensor <= 0 ? numberOfSensors - 1 : sensorAnalizer.currentSensor - 1;
+        }
     }
 
     void Move()
@@ -144,12 +171,13 @@ public class BirdController : MonoBehaviour
 
         if (timeSinceStart >= timeToResetSimulation && fitness <= fitnessToResetSimulation)
         {
+            sensorAnalizer.onBirdDeath(fitness);
             geneticAlgorithm.Death(fitness);
             return;
         }    
         if(fitness >= successFitnessValue)
         {
-            //Save network
+            sensorAnalizer.onBirdDeath(fitness);
             geneticAlgorithm.Death(fitness);
         }
     }
@@ -170,6 +198,7 @@ public class BirdController : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        sensorAnalizer.onBirdDeath(fitness);
         geneticAlgorithm.Death(fitness);
     }
     private void OnDrawGizmos()

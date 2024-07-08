@@ -120,15 +120,18 @@ public class NeuralNetwork
         {
             if (i == 0)
             {
-                hiddenLayers[0] = ((inputLayer * weights[0]) + biases[0]).PointwiseTanh();
+               // hiddenLayers[0] = ((inputLayer * weights[0]) + biases[0]).PointwiseTanh();
+                hiddenLayers[0] = ((inputLayer * weights[0])).PointwiseTanh();
             }
             else
             {
-                hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i]) + biases[i]).PointwiseTanh();
+                //hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i]) + biases[i]).PointwiseTanh();
+                hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i])).PointwiseTanh();
             }
         }
 
-        outputLayer = ((hiddenLayers[hiddenLayers.Count - 1] * weights[weights.Count - 1]) + biases[biases.Count - 1]).PointwiseTanh();
+        //outputLayer = ((hiddenLayers[hiddenLayers.Count - 1] * weights[weights.Count - 1]) + biases[biases.Count - 1]).PointwiseTanh();
+        outputLayer = ((hiddenLayers[hiddenLayers.Count - 1] * weights[weights.Count - 1])).PointwiseTanh();
 
         //First output is speed and second output is turn
         return (Sigmoid(outputLayer[0, 0]), (float)Math.Tanh(outputLayer[0, 1]));

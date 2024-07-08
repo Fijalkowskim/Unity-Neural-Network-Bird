@@ -39,8 +39,6 @@ public class GeneticAlgorithm : MonoBehaviour
     [Tooltip("Percent of best simulations from previous generation that will be pick as crossover parents")]
     [Range(0.0f, 1.0f)]
     [SerializeField] float crossoverParentSelectionRate = 0.4f;
-    
-    
 
     [SerializeField] NeuralNetwork[] generation;
 
