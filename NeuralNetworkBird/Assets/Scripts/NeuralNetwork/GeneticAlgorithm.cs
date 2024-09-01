@@ -90,7 +90,7 @@ public class GeneticAlgorithm : MonoBehaviour
         File.WriteAllText(savePath + fileName, parameters.ToString());
 
         string generationFileName = "/GenerationSummary.csv";
-        File.WriteAllText(savePath + generationFileName,"generation,fitness");
+        File.WriteAllText(savePath + generationFileName,"generation;fitness");
     } 
     public void ResetAll()
     {
@@ -265,6 +265,6 @@ public class GeneticAlgorithm : MonoBehaviour
     void AddGenerationSummaryToFile(GenerationSummaryData generationSummaryData, int generationIndex)
     {
         string generationFileName = "/GenerationSummary.csv";
-        File.AppendAllText(savePath + generationFileName, $"\n{generationIndex},{generationSummaryData.avgFitness.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)}");
+        File.AppendAllText(savePath + generationFileName, $"\n{generationIndex};{generationSummaryData.avgFitness.ToString("0,00", System.Globalization.CultureInfo.InvariantCulture)}");
     }
 }

@@ -6336,12 +6336,12 @@ MonoBehaviour:
   simulationsHistory: {fileID: 2128595586}
   simulationsHistoryUIDisplay: {fileID: 1738971918}
   birdController: {fileID: 8907535795896029988}
-  totalSimulations: 5
-  mutationRate: 0.055
-  maxMutationChange: 1
-  eliteSelectionRate: 0.503
-  percentOfCrossovers: 0.3
-  crossoverParentSelectionRate: 0.4
+  totalSimulations: 10
+  mutationRate: 0.1
+  maxMutationChange: 0.3
+  eliteSelectionRate: 0.7
+  percentOfCrossovers: 0.2
+  crossoverParentSelectionRate: 0.5
   generation: []
 --- !u!4 &1808684255
 Transform:
@@ -8175,8 +8175,8 @@ MonoBehaviour:
   sensorAnalizer: {fileID: 8907535795896029989}
   maxSpeed: 3
   acceleration: 20
-  maxTurnSpeed: 6
-  turnAcceleration: 10
+  maxTurnSpeed: 8
+  turnAcceleration: 12
   drawGizmos: 1
 --- !u!114 &8907535795896029989
 MonoBehaviour:
@@ -8192,7 +8192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveToFile: 1
   sensorUI: {fileID: 1738971920}
-  drawRay: 1
+  drawRay: 0
   lineRenderer: {fileID: 8907535795896029990}
   hitColor: {r: 1, g: 0.16443026, b: 0, a: 1}
   notHitColor: {r: 1, g: 0.96754205, b: 0, a: 1}

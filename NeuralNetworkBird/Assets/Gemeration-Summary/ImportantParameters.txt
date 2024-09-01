@@ -1,8 +1,8 @@
 Parameters:
-Number of Sensors: 30
+Number of Sensors: 15
 Field of View: 120
 Sensor Distance: 200
-Total Simulations: 5
-Mutation Rate: 0,055
-Elite Selection: 0,503
-Percent of Crossovers: 0,3
+Total Simulations: 10
+Mutation Rate: 0,1
+Elite Selection: 0,7
+Percent of Crossovers: 0,2

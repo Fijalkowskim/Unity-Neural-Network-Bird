@@ -23,7 +23,7 @@ public class BirdController : MonoBehaviour
     [SerializeField] float fitnessToResetSimulation = 40f;
 
     [Header("Sensors")]
-    [Range(2, 30)]
+    [Range(4, 30)]
     [SerializeField] int _numberOfSensors = 3;
     [Range(30,200)]
     [SerializeField] public int fieldOfView = 120;
@@ -74,17 +74,13 @@ public class BirdController : MonoBehaviour
     {
         SetupVariables();
     }
-    void Update()
-    {
-        if (neuralNetwork == null) return;
-        Move();
-        CalculateFintess();
-        SensorAnalizerInput();
-    }
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (neuralNetwork == null) return;
         ReadSensors();
+        Move();
+        CalculateFintess();
+        SensorAnalizerInput();
     }
     void SetupVariables()
     {

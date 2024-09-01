@@ -38,7 +38,7 @@ public class NeuralNetwork
             int hiddenNeuronsCount = inputNeuronsCount - i;
             Matrix<float> f = Matrix<float>.Build.Dense(1, hiddenNeuronsCount);
             hiddenLayers.Add(f);
-            biases.Add(UnityEngine.Random.Range(-1f, 1f));
+            biases.Add(UnityEngine.Random.Range(-0.1f, 0.1f));
 
             Matrix<float> weightsMatrix = Matrix<float>.Build.Dense(hiddenNeuronsCount + 1, hiddenNeuronsCount);
             weights.Add(weightsMatrix);
@@ -46,7 +46,7 @@ public class NeuralNetwork
 
         Matrix<float> OutputWeight = Matrix<float>.Build.Dense(3, 2);
         weights.Add(OutputWeight);
-        biases.Add(UnityEngine.Random.Range(-1f, 1f));
+        biases.Add(UnityEngine.Random.Range(-0.1f, 0.1f));
     }
 
     public NeuralNetwork(int inputNeuronsCount, int generation, int index)
@@ -120,17 +120,16 @@ public class NeuralNetwork
         {
             if (i == 0)
             {
-               // hiddenLayers[0] = ((inputLayer * weights[0]) + biases[0]).PointwiseTanh();
+                hiddenLayers[0] = ((inputLayer * weights[0]) + biases[0]).PointwiseTanh();
                 hiddenLayers[0] = ((inputLayer * weights[0])).PointwiseTanh();
             }
             else
             {
-                //hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i]) + biases[i]).PointwiseTanh();
+                hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i]) + biases[i]).PointwiseTanh();
                 hiddenLayers[i] = ((hiddenLayers[i - 1] * weights[i])).PointwiseTanh();
             }
         }
 
-        //outputLayer = ((hiddenLayers[hiddenLayers.Count - 1] * weights[weights.Count - 1]) + biases[biases.Count - 1]).PointwiseTanh();
         outputLayer = ((hiddenLayers[hiddenLayers.Count - 1] * weights[weights.Count - 1])).PointwiseTanh();
 
         //First output is speed and second output is turn
