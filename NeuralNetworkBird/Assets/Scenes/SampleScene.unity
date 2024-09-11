@@ -8166,7 +8166,7 @@ MonoBehaviour:
   successFitnessValue: 3000
   timeToResetSimulation: 20
   fitnessToResetSimulation: 40
-  _numberOfSensors: 30
+  _numberOfSensors: 15
   fieldOfView: 120
   sensorDistance: 200
   sensorMask:

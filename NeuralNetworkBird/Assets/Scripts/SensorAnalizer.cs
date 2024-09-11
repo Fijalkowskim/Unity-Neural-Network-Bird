@@ -82,10 +82,10 @@ public class SensorAnalizer : MonoBehaviour
         string ID = DateTime.Now.Ticks.ToString();
         string fileName = "/expectedTurn" + ID + "-fitness-"+ fitness.ToString() +".csv";
 
-        string content = "expectedTurn,realTurn";
+        string content = "expectedTurn;realTurn";
         for (int i = 0; i < expectedTurnValues.Count; i++)
         {
-            content += $"\n{expectedTurnValues[i]},{realTurnValues[i]}";
+            content += $"\n{expectedTurnValues[i]};{realTurnValues[i]}";
         }
 
         File.WriteAllText(newPath + fileName, content);
